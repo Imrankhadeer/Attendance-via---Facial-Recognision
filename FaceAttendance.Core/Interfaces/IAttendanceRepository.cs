@@ -16,5 +16,18 @@ namespace FaceAttendance.Core.Interfaces
         Task MarkAttendanceAsync(AttendanceRecord record);
         Task<bool> HasAttendanceForDateAsync(int studentId, DateTime date);
         Task<IEnumerable<AttendanceRecord>> GetAttendanceRecordsAsync(DateTime? date = null);
+        Task<IEnumerable<AttendanceRecord>> GetAttendanceRecordsByStudentIdAsync(string studentId);
+
+        // Faculties
+        Task<int> CreateFacultyAsync(Faculty faculty);
+        Task<IEnumerable<Faculty>> GetAllFacultiesAsync();
+        Task<Faculty?> GetFacultyByUsernameAsync(string username);
+        Task DeleteFacultyAsync(int id);
+
+        // Sessions
+        Task<int> CreateSessionAsync(ClassSession session);
+        Task EndSessionAsync(int id);
+        Task<IEnumerable<ClassSession>> GetActiveSessionsAsync();
+        Task<IEnumerable<ClassSession>> GetSessionsByFacultyIdAsync(int facultyId);
     }
 }

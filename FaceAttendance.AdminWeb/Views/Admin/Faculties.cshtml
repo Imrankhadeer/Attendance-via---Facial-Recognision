@@ -1,0 +1,69 @@
+@model IEnumerable<FaceAttendance.Core.Models.Faculty>
+@{
+    ViewData["Title"] = "Faculty Management";
+}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Faculty Management</h1>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<div class="card mb-4">
+    <div class="card-header bg-dark text-white">Create New Faculty User</div>
+    <div class="card-body">
+        <form asp-action="CreateFaculty" method="post" class="row gx-3 gy-2 align-items-center">
+            <div class="col-sm-3">
+                <label class="visually-hidden" for="name">Name</label>
+                <input type="text" class="form-control" name="name" id="name" placeholder="Full Name" required>
+            </div>
+            <div class="col-sm-3">
+                <label class="visually-hidden" for="username">Username</label>
+                <input type="text" class="form-control" name="username" id="username" placeholder="Username" required>
+            </div>
+            <div class="col-sm-3">
+                <label class="visually-hidden" for="password">Password</label>
+                <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">Create Faculty</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Username</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var faculty in Model)
+            {
+                <tr>
+                    <td>@faculty.Id</td>
+                    <td>@faculty.Name</td>
+                    <td>@faculty.Username</td>
+                    <td>
+                        <form asp-action="DeleteFaculty" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to delete @faculty.Name?');">
+                            <input type="hidden" name="id" value="@faculty.Id" />
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

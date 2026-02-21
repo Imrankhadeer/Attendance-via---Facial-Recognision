@@ -79,7 +79,7 @@ namespace FaceAttendance.UI.ViewModels
                         var font = new Font("Arial", 16);
                         var brush = Brushes.LimeGreen;
 
-                        foreach (var (student, alreadyMarked, confidence, face) in results)
+                        foreach (var (student, alreadyMarked, sessionStatus, confidence, face) in results)
                         {
                             g.DrawRectangle(pen, face.Box);
                             
@@ -99,7 +99,7 @@ namespace FaceAttendance.UI.ViewModels
                                {
                                    LastRecognizedName = student.Name;
                                    ConfidenceScore = confidence.ToString("P1");
-                                   ResultMessage = alreadyMarked ? "Already Marked" : "Attendance successfully marked";
+                                   ResultMessage = sessionStatus;
                                });
                             }
                         }

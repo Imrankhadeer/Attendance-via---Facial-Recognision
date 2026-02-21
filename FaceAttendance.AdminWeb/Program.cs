@@ -30,7 +30,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 // Expose the Desktop "img" folder as a static path so the Web app can render the face thumbnails

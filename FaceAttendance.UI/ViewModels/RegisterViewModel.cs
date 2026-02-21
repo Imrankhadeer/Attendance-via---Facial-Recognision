@@ -24,6 +24,18 @@ namespace FaceAttendance.UI.ViewModels
         private string _studentId = string.Empty;
 
         [ObservableProperty]
+        private string _course = string.Empty;
+
+        [ObservableProperty]
+        private string _year = string.Empty;
+
+        [ObservableProperty]
+        private string _semester = string.Empty;
+
+        [ObservableProperty]
+        private string _group = string.Empty;
+
+        [ObservableProperty]
         private BitmapImage? _cameraFeed;
 
         [ObservableProperty]
@@ -71,6 +83,11 @@ namespace FaceAttendance.UI.ViewModels
             if (string.IsNullOrWhiteSpace(StudentName) || string.IsNullOrWhiteSpace(StudentId))
             {
                 StatusMessage = "Name and ID required.";
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(Course) || string.IsNullOrWhiteSpace(Year) || string.IsNullOrWhiteSpace(Semester) || string.IsNullOrWhiteSpace(Group))
+            {
+                StatusMessage = "Course, Year, Semester, and Group are required.";
                 return;
             }
 
@@ -134,7 +151,7 @@ namespace FaceAttendance.UI.ViewModels
                     if (isStable)
                     {
                         _ = System.Windows.Application.Current.Dispatcher.InvokeAsync(() => StatusMessage = "Capturing...");
-                        await _attendanceService.RegisterStudentAsync(StudentName, StudentId, _currentFrame!);
+                        await _attendanceService.RegisterStudentAsync(StudentName, StudentId, Course, Year, Semester, Group, _currentFrame!);
                     }
                 });
 
@@ -143,6 +160,10 @@ namespace FaceAttendance.UI.ViewModels
                     StatusMessage = $"Registered {StudentName} successfully!";
                     StudentName = "";
                     StudentId = "";
+                    Course = "";
+                    Year = "";
+                    Semester = "";
+                    Group = "";
                 }
                 else
                 {

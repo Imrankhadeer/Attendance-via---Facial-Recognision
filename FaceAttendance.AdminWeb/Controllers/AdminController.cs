@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FaceAttendance.AdminWeb.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
         private readonly IAttendanceRepository _repository;
@@ -17,9 +17,20 @@ namespace FaceAttendance.AdminWeb.Controllers
             _repository = repository;
         }
 
-        public async Task<IActionResult> Students()
+        public async Task<IActionResult> Students(string courseFilter, string yearFilter, string semesterFilter, string groupFilter)
         {
             var students = await _repository.GetAllStudentsAsync();
+            
+            if (!string.IsNullOrEmpty(courseFilter)) students = students.Where(s => s.Course == courseFilter);
+            if (!string.IsNullOrEmpty(yearFilter)) students = students.Where(s => s.Year == yearFilter);
+            if (!string.IsNullOrEmpty(semesterFilter)) students = students.Where(s => s.Semester == semesterFilter);
+            if (!string.IsNullOrEmpty(groupFilter)) students = students.Where(s => s.StudentGroup == groupFilter);
+            
+            ViewBag.CourseFilter = courseFilter;
+            ViewBag.YearFilter = yearFilter;
+            ViewBag.SemesterFilter = semesterFilter;
+            ViewBag.GroupFilter = groupFilter;
+
             return View(students);
         }
 
@@ -40,17 +51,21 @@ namespace FaceAttendance.AdminWeb.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateStudent(int id, string name, string studentId, string? faceImagePath)
+        public async Task<IActionResult> UpdateStudent(int id, string name, string studentId, string faceImagePath, string course, string year, string semester, string studentGroup)
         {
             try
             {
-                // Basic implementation for saving edited names/IDs
-                var student = await _repository.GetStudentByStudentIdAsync(studentId) ?? new Student { Id = id };
-                student.Id = id;
-                student.Name = name;
-                student.StudentId = studentId;
-                student.FaceImagePath = faceImagePath;
-
+                var student = new Student
+                {
+                    Id = id,
+                    Name = name,
+                    StudentId = studentId,
+                    FaceImagePath = faceImagePath,
+                    Course = course,
+                    Year = year,
+                    Semester = semester,
+                    StudentGroup = studentGroup
+                };
                 await _repository.UpdateStudentAsync(student);
                 TempData["SuccessMessage"] = "Student details updated.";
             }
@@ -67,6 +82,44 @@ namespace FaceAttendance.AdminWeb.Controllers
             var records = await _repository.GetAttendanceRecordsAsync(dateFilter);
             ViewBag.SelectedDate = dateFilter?.ToString("yyyy-MM-dd");
             return View(records);
+        }
+
+        // --- FACULTY MANAGEMENT ---
+        public async Task<IActionResult> Faculties()
+        {
+            var faculties = await _repository.GetAllFacultiesAsync();
+            return View(faculties);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateFaculty(string username, string name, string password)
+        {
+            try
+            {
+                var faculty = new Faculty { Username = username, Name = name, PasswordHash = password };
+                await _repository.CreateFacultyAsync(faculty);
+                TempData["SuccessMessage"] = "Faculty account created.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Error creating faculty: " + ex.Message;
+            }
+            return RedirectToAction(nameof(Faculties));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteFaculty(int id)
+        {
+            try
+            {
+                await _repository.DeleteFacultyAsync(id);
+                TempData["SuccessMessage"] = "Faculty account deleted.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Error deleting faculty: " + ex.Message;
+            }
+            return RedirectToAction(nameof(Faculties));
         }
     }
 }

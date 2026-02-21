@@ -30,6 +30,18 @@
             <TextBlock Text="Student ID"/>
             <TextBox Text="{Binding StudentId, UpdateSourceTrigger=PropertyChanged}" Margin="0,5,0,10" Padding="5"/>
 
+            <TextBlock Text="Course (e.g. CSE)"/>
+            <TextBox Text="{Binding Course, UpdateSourceTrigger=PropertyChanged}" Margin="0,5,0,10" Padding="5"/>
+
+            <TextBlock Text="Year"/>
+            <TextBox Text="{Binding Year, UpdateSourceTrigger=PropertyChanged}" Margin="0,5,0,10" Padding="5"/>
+
+            <TextBlock Text="Semester"/>
+            <TextBox Text="{Binding Semester, UpdateSourceTrigger=PropertyChanged}" Margin="0,5,0,10" Padding="5"/>
+
+            <TextBlock Text="Group (e.g. Regular)"/>
+            <TextBox Text="{Binding Group, UpdateSourceTrigger=PropertyChanged}" Margin="0,5,0,10" Padding="5"/>
+
             <Button Content="Capture &amp; Register" Command="{Binding CaptureAndRegisterCommand}" Padding="10" Margin="0,20,0,10" Background="#3498DB" Foreground="White" FontWeight="Bold"/>
 
             <TextBlock Text="{Binding StatusMessage}" Foreground="Red" TextWrapping="Wrap" FontSize="14"/>

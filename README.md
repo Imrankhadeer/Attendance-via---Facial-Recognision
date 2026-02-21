@@ -3,10 +3,11 @@
 A professional desktop application built with **C# (.NET 8 WPF)**, **PostgreSQL**, and **OpenCV/ArcFace** for real-time student attendance tracking.
 
 ## 🚀 Features
-- **Student Registration**: Capture face from webcam and store embeddings.
-- **Real-time Attendance**: Detect and recognize faces to mark attendance automatically.
-- **Duplicate Prevention**: Ensures a student is marked present only once per day.
-- **Dashboard**: View daily statistics and recent activity.
+- **Student Registration**: Capture face from webcam and assign Course, Year, Semester and Group mappings.
+- **Real-time Attendance**: Detect and recognize faces to mark attendance automatically, conditionally gated by Active Sessions.
+- **Duplicate Prevention**: Ensures a student is marked present only once per session/day.
+- **WPF Dashboard**: View daily statistics and recent activity directly on the local capture machine.
+- **Web Portal Ecosystem**: Multi-Role web dashboards managing Faculty accounts, Active Sessions, Student logs, and Administration.
 - **Architecture**: Clean MVVM architecture with Service and Repository layers.
 
 ## 🛠 Prerequisites
@@ -43,12 +44,32 @@ dotnet run
 cd FaceAttendance.AdminWeb
 dotnet run
 ```
-* The Admin panel will be available at: `http://localhost:5177`
-* **Default Login:**
-  * Username: `admin`
-  * Password: `admin123`
+* The Web Portal will then be available at: `http://localhost:5177`
 
-### 4. Changing Admin Password
+### 4. Navigating The Web Portal Roles
+
+The Web Portal uses a single login page (`http://localhost:5177/Account/Login`), but dynamically shifts capabilities based on your Role selection:
+
+**A. Administrator**
+- **Login As**: Administrator
+- **Default Username**: `admin`
+- **Default Password**: `admin123`
+- **Capabilities**: Can manage registered student profiles (update Course/Year mappings or delete faces), view all universal attendance logs, and **Create/Delete Faculty Accounts**.
+
+**B. Faculty**
+- **Login As**: Faculty
+- **Username**: Created by Admin
+- **Password**: Created by Admin
+- **Capabilities**: Arrives at the Faculty Dashboard. From here, they can input a Course/Year/Semester/Group configuration and click **"Open Session"**. 
+  - *Note: The WPF Camera Application will REFUSE to mark attendance for a student until a Faculty member has an Active Session open for that student's specific grouping.*
+
+**C. Student**
+- **Login As**: Student (Check Attendance)
+- **Username**: Their literal `Student ID` (e.g., 1001)
+- **Password**: Their exact `Full Name` mapping (e.g., John Doe)
+- **Capabilities**: Can view a read-only table of exactly when and where their own attendance was marked.
+
+### 5. Changing Admin Password
 To change the admin password, run the following SQL command in your PostgreSQL database:
 ```sql
 UPDATE admins SET password_hash = 'YourNewPasswordHere' WHERE username = 'admin';

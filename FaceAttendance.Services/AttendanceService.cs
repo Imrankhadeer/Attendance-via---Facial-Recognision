@@ -38,7 +38,7 @@ namespace FaceAttendance.Services
             // but for simplicity we can leave it or add cleanup later.
         }
 
-        public async Task<Student> RegisterStudentAsync(string name, string studentId, byte[] faceImage)
+        public async Task<Student> RegisterStudentAsync(string name, string studentId, string course, string year, string semester, string group, byte[] faceImage)
         {
             // 1. Detect Face
             var detections = await _recognitionService.DetectFacesAsync(faceImage);
@@ -92,6 +92,10 @@ namespace FaceAttendance.Services
             {
                 Name = name,
                 StudentId = studentId,
+                Course = course,
+                Year = year,
+                Semester = semester,
+                StudentGroup = group,
                 FaceEmbedding = embedding,
                 FaceImagePath = imgPath,
                 CreatedAt = DateTime.UtcNow
@@ -102,11 +106,11 @@ namespace FaceAttendance.Services
             return student;
         }
 
-        public async Task<List<(Student? Student, bool AlreadyMarked, float Confidence, FaceDetectionResult Face)>> ProcessFrameAsync(byte[] frameBytes)
+        public async Task<List<(Student? Student, bool AlreadyMarked, string SessionStatus, float Confidence, FaceDetectionResult Face)>> ProcessFrameAsync(byte[] frameBytes)
         {
             if (_cachedStudents.Count == 0) await RefreshStudentCacheAsync();
 
-            var results = new List<(Student?, bool, float, FaceDetectionResult)>();
+            var results = new List<(Student?, bool, string, float, FaceDetectionResult)>();
             
             // 1. Detect Faces
             var detections = await _recognitionService.DetectFacesAsync(frameBytes);
@@ -138,6 +142,21 @@ namespace FaceAttendance.Services
                 bool alreadyMarked = false;
                 if (bestMatch != null && maxScore > Threshold)
                 {
+                    // Check active session for this student
+                    var activeSessions = await _repository.GetActiveSessionsAsync();
+                    var matchingSession = activeSessions.FirstOrDefault(s => 
+                        (string.IsNullOrEmpty(s.Course) || s.Course == bestMatch.Course) &&
+                        (string.IsNullOrEmpty(s.Year) || s.Year == bestMatch.Year) &&
+                        (string.IsNullOrEmpty(s.Semester) || s.Semester == bestMatch.Semester) &&
+                        (string.IsNullOrEmpty(s.StudentGroup) || s.StudentGroup == bestMatch.StudentGroup));
+
+                    if (matchingSession == null)
+                    {
+                        // Found a face, but no active session allows them to mark attendance
+                        results.Add((bestMatch, false, "No Active Session", maxScore, face)); // Will show scanning instead of false attendance
+                        continue;
+                    }
+
                     // Check if already marked
                     var today = DateTime.Today;
                     alreadyMarked = await _repository.HasAttendanceForDateAsync(bestMatch.Id, today);
@@ -147,6 +166,7 @@ namespace FaceAttendance.Services
                         await _repository.MarkAttendanceAsync(new AttendanceRecord
                         {
                             UserId = bestMatch.Id,
+                            SessionId = matchingSession.Id,
                             Date = today,
                             Time = DateTime.Now.TimeOfDay,
                             Status = "Present"
@@ -158,7 +178,7 @@ namespace FaceAttendance.Services
                     bestMatch = null; // Ensure we don't return partial match
                 }
                 
-                results.Add((bestMatch, alreadyMarked, maxScore, face));
+                results.Add((bestMatch, alreadyMarked, alreadyMarked ? "Already Marked" : "Attendance Marked", maxScore, face));
             }
 
             return results;

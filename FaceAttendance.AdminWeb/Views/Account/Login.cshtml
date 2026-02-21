@@ -31,7 +31,7 @@
 
 <main class="form-signin">
     <form asp-controller="Account" asp-action="Login" method="post">
-        <h1 class="h3 mb-3 fw-normal">Admin Sign In</h1>
+        <h1 class="h3 mb-3 fw-normal">Face Attendance Portal</h1>
 
         @if (ViewBag.ErrorMessage != null)
         {
@@ -41,19 +41,46 @@
         }
 
         <div class="form-floating mb-3">
+            <select class="form-select" id="roleSelect" name="role" onchange="updateLabels()">
+                <option value="Admin">Administrator</option>
+                <option value="Faculty">Faculty</option>
+                <option value="Student">Student (Check Attendance)</option>
+            </select>
+            <label for="roleSelect">Login As</label>
+        </div>
+
+        <div class="form-floating mb-3">
             <input type="text" class="form-control" id="floatingInput" name="username" placeholder="Username" required>
-            <label for="floatingInput">Username</label>
+            <label for="floatingInput" id="usernameLabel">Username</label>
         </div>
         <div class="form-floating mb-3">
             <input type="password" class="form-control" id="floatingPassword" name="password" placeholder="Password" required>
-            <label for="floatingPassword">Password</label>
+            <label for="floatingPassword" id="passwordLabel">Password</label>
         </div>
 
-        <button class="w-100 btn btn-lg btn-primary mb-3" type="submit">Admin Sign in</button>
+        <button class="w-100 btn btn-lg btn-primary mb-3" type="submit">Sign in</button>
         <p class="mt-5 mb-3 text-muted"> Face Attendance System &copy; @DateTime.Now.Year</p>
     </form>
 </main>
 
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function updateLabels() {
+        var role = document.getElementById("roleSelect").value;
+        var uLabel = document.getElementById("usernameLabel");
+        var pLabel = document.getElementById("passwordLabel");
+        var pInput = document.getElementById("floatingPassword");
+        
+        if (role === 'Student') {
+            uLabel.innerText = "Student ID";
+            pLabel.innerText = "Full Name";
+            pInput.type = "text";
+        } else {
+            uLabel.innerText = "Username";
+            pLabel.innerText = "Password";
+            pInput.type = "password";
+        }
+    }
+</script>
 </body>
 </html>

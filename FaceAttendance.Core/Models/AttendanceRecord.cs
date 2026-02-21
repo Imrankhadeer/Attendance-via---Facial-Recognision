@@ -6,6 +6,7 @@ namespace FaceAttendance.Core.Models
     {
         public int Id { get; set; }
         public int UserId { get; set; }
+        public int? SessionId { get; set; }
         public string StudentName { get; set; } = string.Empty; // For display convenience
         public string StudentId { get; set; } = string.Empty; // For display convenience
         public DateTime Date { get; set; }
