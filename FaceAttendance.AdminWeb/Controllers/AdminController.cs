@@ -2,10 +2,12 @@ using System;
 using System.Threading.Tasks;
 using FaceAttendance.Core.Interfaces;
 using FaceAttendance.Core.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FaceAttendance.AdminWeb.Controllers
 {
+    [Authorize]
     public class AdminController : Controller
     {
         private readonly IAttendanceRepository _repository;

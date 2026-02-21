@@ -36,6 +36,7 @@
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Name" Binding="{Binding StudentName}" Width="*"/>
                     <DataGridTextColumn Header="ID" Binding="{Binding StudentId}" Width="100"/>
+                    <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat={}{0:yyyy-MM-dd}}" Width="100"/>
                     <DataGridTextColumn Header="Time" Binding="{Binding Time, StringFormat=hh\\:mm}" Width="100"/>
                     <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="100"/>
                 </DataGrid.Columns>

@@ -30,17 +30,28 @@ A professional desktop application built with **C# (.NET 8 WPF)**, **PostgreSQL*
 The **InsightFace Buffalo_l** model files have already been downloaded and placed in the `FaceAttendance.UI/buffalo_l` folder.
 - They are already configured to copy to the Output Directory on build.
 
-### 3. Running the Application
-**Using Visual Studio:**
-1. Open `FaceAttendanceSystem.sln` (or open the folder).
-2. Set `FaceAttendance.UI` as the Startup Project.
-3. Build and Run (F5).
+### 3. Running the Applications
 
-**Using CLI:**
+**Desktop Application (Face Recognition)**
 ```powershell
-dotnet restore
 cd FaceAttendance.UI
 dotnet run
+```
+
+**Admin Panel Web Application**
+```powershell
+cd FaceAttendance.AdminWeb
+dotnet run
+```
+* The Admin panel will be available at: `http://localhost:5177`
+* **Default Login:**
+  * Username: `admin`
+  * Password: `admin123`
+
+### 4. Changing Admin Password
+To change the admin password, run the following SQL command in your PostgreSQL database:
+```sql
+UPDATE admins SET password_hash = 'YourNewPasswordHere' WHERE username = 'admin';
 ```
 
 ## 🏗 Project Structure
@@ -51,6 +62,7 @@ dotnet run
   - `FaceRecognitionService` (OnnxRuntime)
   - `AttendanceService` (Business Logic)
 - **FaceAttendance.UI**: WPF Views, ViewModels, and Dependency Injection setup.
+- **FaceAttendance.AdminWeb**: ASP.NET Core MVC App for managing attendance logs and registered students.
 
 ## 📝 Notes
 - The first run might take a moment to initialize the camera and load the ONNX model.
