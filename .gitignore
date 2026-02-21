@@ -1,0 +1,59 @@
+# Visual Studio folders and files
+.vs/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]elease*
+[Mm]inSizeRel/
+[Rr]elWithDebInfo/
+[Xx]64/
+[Xx]86/
+[Aa]RM/
+[Aa]RM64/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+*.exe
+*.dll
+*.pdb
+*.idb
+*.ilk
+*.cache
+
+# Log files
+*.log
+camera_error.log
+camera_debug.log
+crash.log
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+*.mdf
+*.ldf
+
+# Web specific
+node_modules/
+.env
+
+# Temporal / specific huge files from your directories
+scoped_dir*/
+dotnet-sdk-*.exe
+
+# Large AI model files (Optional, assuming buffalo_l has onnx models > 100MB)
+# Github blocks files > 100MB. If you need models, use Git LFS or download them via script.
+buffalo_l/
+*.onnx
+
+# OS files
+.DS_Store
+Thumbs.db

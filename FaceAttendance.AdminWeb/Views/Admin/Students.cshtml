@@ -1,0 +1,71 @@
+@model IEnumerable<FaceAttendance.Core.Models.Student>
+@{
+    ViewData["Title"] = "Student Management";
+}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Student Management</h1>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>Face</th>
+                <th>Name</th>
+                <th>Student ID</th>
+                <th>Registered Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var student in Model)
+            {
+                <tr>
+                    <td>
+                        @if (!string.IsNullOrEmpty(student.FaceImagePath))
+                        {
+                            <img src="/@student.FaceImagePath.Replace('\\', '/')" alt="Thumbnail" class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;" />
+                        }
+                        else
+                        {
+                            <div class="rounded-circle bg-secondary d-inline-flex justify-content-center align-items-center text-white" style="width: 50px; height: 50px;">
+                                <i class="bi bi-person"></i>
+                            </div>
+                        }
+                    </td>
+                    <td>
+                        <input type="text" name="name" value="@student.Name" form="update-form-@student.Id" class="form-control form-control-sm me-2" required />
+                    </td>
+                    <td>
+                        <input type="text" name="studentId" value="@student.StudentId" form="update-form-@student.Id" class="form-control form-control-sm me-2" required />
+                    </td>
+                    <td>@student.CreatedAt.ToString("g")</td>
+                    <td>
+                        <!-- Update Form -->
+                        <form id="update-form-@student.Id" asp-action="UpdateStudent" method="post" class="d-inline">
+                            <input type="hidden" name="id" value="@student.Id" />
+                            <input type="hidden" name="faceImagePath" value="@student.FaceImagePath" />
+                            <button type="submit" class="btn btn-sm btn-success me-2">Save</button>
+                        </form>
+                        
+                        <!-- Delete Form -->
+                        <form asp-action="DeleteStudent" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to delete @student.Name?');">
+                            <input type="hidden" name="id" value="@student.Id" />
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
